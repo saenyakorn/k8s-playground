@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: le-production
+spec:
+  acme:
+    email: saneyakorn@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: issuer-le-production
+    solvers:
+      - http01:
+          ingress:
+            class: traefik
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: k8s.saenyakorn.dev
+spec:
+  secretName: k8s.saenyakorn.dev
+  dnsNames:
+    - k8s.saenyakorn.dev
+  issuerRef:
+    name: le-production
+    kind: Issuer

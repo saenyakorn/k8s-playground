@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  namespace: hello-world
+spec:
+  selector:
+    matchLabels:
+      name: hello-world
+  replicas: 1
+  template:
+    metadata:
+      name: hello-world
+      labels:
+        name: hello-world
+    spec:
+      containers:
+        - name: hello-world
+          image: boxboat/hello-world
+          ports:
+            - containerPort: 80
+              name: hello-world-svc
+          env:
+            - name: PORT
+              value: '80'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-svc
+  namespace: hello-world
+spec:
+  type: ClusterIP
+  selector:
+    name: hello-world
+  ports:
+    - name: default
+      protocol: TCP
+      port: 80
+      targetPort: hello-world-svc
