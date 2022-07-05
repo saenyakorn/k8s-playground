@@ -10,9 +10,25 @@ spec:
   routes:
     - match: Host(`k8s.saenyakorn.dev`)
       kind: Rule
+      middlewares:
+        - name: rate-limit
+          namespace: hello-world
       services:
         - name: hello-world-svc
           namespace: hello-world
           port: 80
   tls:
     secretName: k8s.saenyakorn.dev
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: rate-limit
+  namespace: hello-world
+spec:
+  rateLimit:
+    sourceCriterion:
+      requestHeaderName: X-API-Token
+    period: 4m
+    average: 5
+    burst: 1000
